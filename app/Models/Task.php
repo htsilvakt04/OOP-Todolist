@@ -8,10 +8,10 @@ class Task
   protected $description;
   protected $due;
   protected $complete = false;
-  public function __construct()
-  {
-    echo "Yolo, you're accessing the Task class";
-  }
+  // public function __construct()
+  // {
+  //   echo "Yolo, you're accessing the Task class";
+  // }
   public function setDescription($description)
   {
     $this->description = $description;

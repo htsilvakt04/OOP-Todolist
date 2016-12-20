@@ -2,9 +2,13 @@
 use Todo\Models\Task;
 require("vendor/autoload.php");
 
+try{
+  $db = new PDO("mysql:host=localhost;dbname=test", "root", "");
+} catch (Exception $e) {
+  die("Couldn't connect to the database". $e->getMessage());
+}
 
-$task = new Task;
-$task->setDescription("Finish this course");
-$task->setDue(new DateTime("+2 day",new DateTimeZone('Asia/Ho_Chi_Minh')));
-
-var_dump($task);
+$task = $db->prepare("SELECT * FROM tasks");
+$task->setFetchMode(PDO::FETCH_CLASS, Task::class);
+$task->execute();
+$results = $task->fetchAll();
