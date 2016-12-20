@@ -1,5 +1,3 @@
 <?php
 
-echo "yahoo!";
-
-echo "new barand";
+require("vendor/autoload.php");
