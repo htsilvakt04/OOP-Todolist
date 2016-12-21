@@ -19,7 +19,8 @@ class MysqlDatabaseTaskStorage implements TaskStorageInterface
       INSERT INTO tasks (description, due, complete) VALUES (:description, :due, :complete);
     ");
     $statement->execute($this->buildColumns($task));
-    return $this->db->LastInsertId();
+
+    return $this->get($this->db->lastInsertId());
 
   }
 
@@ -59,7 +60,7 @@ class MysqlDatabaseTaskStorage implements TaskStorageInterface
       return $statement->fetchAll();
   }
 
-  public function buildColumns(Task $task, array $additional = [])
+  protected function buildColumns(Task $task, array $additional = [])
   {
     return array_merge([
       "description" => $task->getDescription(),
