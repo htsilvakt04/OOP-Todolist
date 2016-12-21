@@ -15,6 +15,7 @@ class Task
   public function setDescription($description)
   {
     $this->description = $description;
+    return $this;
   }
   public function getDescription()
   {
@@ -23,6 +24,7 @@ class Task
   public function setComplete($complete = true)
   {
     $this->complete = $complete;
+    return $this;
   }
   public function getComplete()
   {
@@ -31,6 +33,7 @@ class Task
   public function setDue(DateTime $due)
   {
     $this->due = $due;
+    return $this;
   }
   public function getDue()
   {

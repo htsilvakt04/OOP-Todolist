@@ -1,14 +1,14 @@
 <?php
 use Todo\Models\Task;
+use Todo\Storage\MysqlDatabaseTaskStorage;
 require("vendor/autoload.php");
 
-try{
-  $db = new PDO("mysql:host=localhost;dbname=test", "root", "");
-} catch (Exception $e) {
-  die("Couldn't connect to the database". $e->getMessage());
-}
+$db = new PDO("mysql:host=localhost;dbname=test", "root", "");
 
-$task = $db->prepare("SELECT * FROM tasks");
-$task->setFetchMode(PDO::FETCH_CLASS, Task::class);
-$task->execute();
-$results = $task->fetchAll();
+$storage = new MysqlDatabaseTaskStorage($db);
+
+$task = $storage->get(2);
+
+$task->setDescription("drink more more coffee")->setDue(new DateTime("+2 years"))->setComplete();
+
+echo $storage->update($task);
