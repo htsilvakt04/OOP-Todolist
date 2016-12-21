@@ -7,24 +7,22 @@ use PDO;
 class MysqlDatabaseTaskStorage implements TaskStorageInterface
 {
   protected $db;
+
   public function __construct(PDO $db)
   {
     $this->db = $db;
   }
+
   public function store(Task $task)
   {
     $statement= $this->db->prepare("
       INSERT INTO tasks (description, due, complete) VALUES (:description, :due, :complete);
     ");
-
-    $statement->execute([
-      "description" => $task->getDescription(),
-      "due" => $task->getDue()->format("Y-m-d H:i:s"),
-      "complete" => $task->getComplete()
-    ]);
+    $statement->execute($this->buildColumns($task));
     return $this->db->LastInsertId();
 
   }
+
   public function update(Task $task)
   {
     $statement = $this->db->prepare("
@@ -32,14 +30,10 @@ class MysqlDatabaseTaskStorage implements TaskStorageInterface
       SET description = :description, due = :due, complete = :complete
       WHERE id = :id;
     ");
-    $statement->execute([
-      "description" => $task->getDescription(),
-      "due" => $task->getDue()->format("Y-m-d H:i:s"),
-      "complete" => $task->getComplete(),
-      "id" => $task->getId()
-    ]);
-    return "Task was updated!";
+    $statement->execute( $this->buildColumns($task,["id" => $task->getId()]));
+    return $this->get($task->getId());
   }
+
   public function get($id)
   {
     $statement = $this->db->prepare("
@@ -53,6 +47,7 @@ class MysqlDatabaseTaskStorage implements TaskStorageInterface
     ]);
     return $statement->fetch();
   }
+
   public function all()
   {
       $statement = $this->db->prepare("
@@ -62,5 +57,14 @@ class MysqlDatabaseTaskStorage implements TaskStorageInterface
       $statement->setFetchMode(PDO::FETCH_CLASS, Task::class);
       $statement->execute();
       return $statement->fetchAll();
+  }
+
+  public function buildColumns(Task $task, array $additional = [])
+  {
+    return array_merge([
+      "description" => $task->getDescription(),
+      "due" => $task->getDue()->format("Y-m-d H:i:s"),
+      "complete" => $task->getComplete()
+    ], $additional);
   }
 }

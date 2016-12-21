@@ -7,8 +7,8 @@ $db = new PDO("mysql:host=localhost;dbname=test", "root", "");
 
 $storage = new MysqlDatabaseTaskStorage($db);
 
-$task = $storage->get(2);
+$task = $storage->get(1);
 
-$task->setDescription("drink more more coffee")->setDue(new DateTime("+2 years"))->setComplete();
+$task->setDescription("finish course update")->setDue(new DateTime("+2 hours"))->setComplete();
 
-echo $storage->update($task);
+var_dump( $storage->update($task));
